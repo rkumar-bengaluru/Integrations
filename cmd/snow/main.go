@@ -11,7 +11,7 @@ import (
 	"agent.fabric.com/modules/internal/encryption"
 	"agent.fabric.com/modules/internal/handler"
 	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/integrations/slack"
+	"agent.fabric.com/modules/internal/integrations/snow"
 	"agent.fabric.com/modules/internal/logger"
 	"agent.fabric.com/modules/internal/repository"
 	"agent.fabric.com/modules/internal/repository/db"
@@ -59,7 +59,7 @@ func main() {
 	credentialRepo := impl.NewCredentialRepository(database, logger)
 
 	// create slack integration if not exist.
-	integration, err := slack.CreateSlackIntegration(ctx, database, logger, encryptionSvc, credentialRepo, tenantUID)
+	integration, err := snow.CreateSnowIntegration(ctx, database, logger, encryptionSvc, credentialRepo, tenantUID)
 
 	if err != nil {
 		logger.Error("error fetching integration", zap.Error(err))
@@ -78,7 +78,7 @@ func main() {
 	// handler for slack
 	validator := service.NewCredentialValidator()
 	bindingSvc := service.NewIntegrationBindingService(bindingRepo, credentialRepo, encryptionSvc, &validator)
-	slackHandler := slack.NewSlackHandler(encryptionSvc, bindingSvc, logger)
+	slackHandler := snow.NewSnowHandler(encryptionSvc, bindingSvc, logger)
 
 	if err != nil {
 		// try creating a new one.

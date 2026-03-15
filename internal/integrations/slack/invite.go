@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"agent.fabric.com/modules/internal/handler"
+	"agent.fabric.com/modules/internal/integrations/commons"
 	"agent.fabric.com/modules/internal/models"
 	"agent.fabric.com/modules/internal/repository/impl"
 	"github.com/google/uuid"
@@ -25,7 +26,7 @@ func (c *SlackHandler) InviteToChannel(
 ) (*handler.ActionResult, error) {
 
 	c.logger.Debug("finally action time for slack", zap.String("action", string(actionDef.Type)))
-	PrintCollectedParams(inputs)
+	commons.PrintCollectedParams(inputs)
 
 	// Validate required fields
 	if runtimeConfig.AccessToken == nil || *runtimeConfig.AccessToken == "" {
@@ -33,7 +34,7 @@ func (c *SlackHandler) InviteToChannel(
 	}
 
 	// Validate inputs against schema
-	if err := validateSchema(actionDef.InputSchema, inputs, "input"); err != nil {
+	if err := commons.ValidateSchema(actionDef.InputSchema, inputs, "input"); err != nil {
 		return nil, fmt.Errorf("input validation failed: %w", err)
 	}
 	c.logger.Debug("input validation successful")
@@ -100,7 +101,7 @@ func (c *SlackHandler) InviteToChannel(
 	}
 
 	// Validate outputs against schema
-	if err := validateSchema(actionDef.OutputSchema, slackResp, "output"); err != nil {
+	if err := commons.ValidateSchema(actionDef.OutputSchema, slackResp, "output"); err != nil {
 		c.logger.Warn("Output validation warning",
 			zap.String("action", actionDef.Name),
 			zap.Error(err),

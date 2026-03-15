@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"agent.fabric.com/modules/internal/encryption"
+	"agent.fabric.com/modules/internal/integrations/commons"
 	"agent.fabric.com/modules/internal/models"
 	"agent.fabric.com/modules/internal/repository"
 	"agent.fabric.com/modules/internal/repository/impl"
@@ -13,19 +14,6 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
-
-func check_if_credential_exists(ctx context.Context,
-	repo repository.CredentialRepository,
-	tenantID uuid.UUID,
-	name string) (*models.Credential, error) {
-
-	credential, err := repo.GetByTenantIDAndName(ctx, tenantID, name)
-	if err != nil {
-		return nil, err
-	}
-
-	return credential, nil
-}
 
 func CreateSlackIntegration(ctx context.Context,
 	database *gorm.DB,
@@ -48,7 +36,7 @@ func CreateSlackIntegration(ctx context.Context,
 			}
 		}
 
-		platformCredentials, err := ConvertCredentialsToPlatform(credentials, nil)
+		platformCredentials, err := commons.ConvertCredentialsToPlatform(credentials, nil)
 
 		if err != nil {
 			return nil, fmt.Errorf("Error creating platform credential %s", SlackBotCredentialName)
