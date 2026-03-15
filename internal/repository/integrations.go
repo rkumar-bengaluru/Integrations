@@ -79,9 +79,13 @@ type IntegrationRepository interface {
 	CreateActionDefinition(ctx context.Context, integrationID uuid.UUID, action *models.ActionDefinition) error
 	GetActionDefinitionByID(ctx context.Context, id uuid.UUID) (*models.ActionDefinition, error)
 	GetActionDefinitionByType(ctx context.Context, actionType models.ActionType, tenantID uuid.UUID) (*models.ActionDefinition, error)
+	GetActionDefinitionByName(ctx context.Context, actionType models.ActionType, actionName string, tenantID uuid.UUID) (*models.ActionDefinition, error)
 	ListActionDefinitions(ctx context.Context, tenantID uuid.UUID, category models.ActionType, isActive *bool, page, pageSize int) ([]models.ActionDefinition, int64, error)
 	UpdateActionDefinition(ctx context.Context, action *models.ActionDefinition) error
 	DeleteActionDefinition(ctx context.Context, id uuid.UUID) error
+	CheckIfActionDefinitionExist(ctx context.Context,
+		integrationRepo IntegrationRepository,
+		actionType, actionName string, tenantID uuid.UUID) (*models.ActionDefinition, error)
 
 	// Association operations
 	AddActionToIntegration(ctx context.Context, integrationID, actionID uuid.UUID) error

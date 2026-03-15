@@ -14,10 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
-	SlackVendorName = "slack"
-)
-
 func check_if_credential_exists(ctx context.Context,
 	repo repository.CredentialRepository,
 	tenantID uuid.UUID,
@@ -40,9 +36,8 @@ func CreateSlackIntegration(ctx context.Context,
 
 	integrationRepo := impl.NewIntegrationRepository(database, logger)
 
-	name := "Slack Integration"
 	// check if integration already exist.
-	_, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, name)
+	_, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SlackIntegrationName)
 	if err == repository.ErrIntegrationNotFound {
 		// get the platform credential id for this integration
 		credentials, err := credentialRepo.GetAllCredentials(ctx, SlackVendorName)
@@ -398,7 +393,7 @@ func CreateSlackIntegration(ctx context.Context,
 
 		// create new integration
 		integration := &models.Integration{
-			Name:        name,
+			Name:        SlackIntegrationName,
 			TenantID:    tenantID,
 			Description: "Integration with Slack for user communication & bot communication",
 			Category:    models.CategoryCommunication,
@@ -411,9 +406,9 @@ func CreateSlackIntegration(ctx context.Context,
 			Actions: []models.ActionDefinition{
 				{
 					TenantID:          tenantID,
-					Name:              "Create New Channel",
+					Name:              SlackCreateChannelActionName,
 					Description:       "Create a new Slack channel",
-					Type:              "create_channel",
+					Type:              models.ActionType(SlackCreateChannelActionType),
 					SchemaVersion:     "v1",
 					SupportsStreaming: false,
 					IsInternal:        false,
@@ -499,12 +494,12 @@ func CreateSlackIntegration(ctx context.Context,
 		}
 		err = integrationRepo.CreateIntegration(ctx, integration)
 		if err != nil {
-			return nil, fmt.Errorf("Error creating integration %s, with error %w", name, err)
+			return nil, fmt.Errorf("Error creating integration %s, with error %w", SlackIntegrationName, err)
 		}
 
 		return integration, nil
 	}
 	// integration already exist.
-	logger.Debug(fmt.Sprintf("integration  %s already exit", name))
-	return integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, name)
+	logger.Debug(fmt.Sprintf("integration  %s already exit", SlackIntegrationName))
+	return integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SlackIntegrationName)
 }

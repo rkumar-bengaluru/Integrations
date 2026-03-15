@@ -67,9 +67,17 @@ func (h *SlackHandler) Execute(
 		return nil, fmt.Errorf("failed to decrypt credential: %w", err)
 	}
 
-	switch actionDef.Type {
-	case "create_channel":
+	switch string(actionDef.Type) {
+	case SlackCreateChannelActionType:
 		return h.CreateChannel(ctx, runtimeConfig, actionDef, binding, inputs)
+	case SlackListUsersActionType:
+		return h.ListUsers(ctx, runtimeConfig, actionDef, binding, inputs)
+	case SlackInviteUsersActionType:
+		return h.InviteToChannel(ctx, runtimeConfig, actionDef, binding, inputs)
+	case SlackPostMessageActionType:
+		return h.PostMessage(ctx, runtimeConfig, actionDef, binding, inputs)
+	case SlackListChannelsActionType:
+		return h.ListChannels(ctx, runtimeConfig, actionDef, binding, inputs)
 	default:
 		return nil, fmt.Errorf("unsupported action: %s", actionDef.Type)
 	}

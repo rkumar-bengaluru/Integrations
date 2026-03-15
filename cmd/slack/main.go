@@ -209,7 +209,7 @@ func CreateNewBinding(
 
 func buildActionMenu(actions []models.ActionDefinition) []ActionMenuItem {
 	var menu []ActionMenuItem
-	fmt.Println(fmt.Printf("length of actions %d", len(actions)))
+	fmt.Printf("length of actions %d\n", len(actions))
 	for i, action := range actions {
 		fmt.Println(fmt.Sprintf("action action %s is active %s", action.Name, action.IsActive))
 		if !action.IsActive {
@@ -321,6 +321,11 @@ func executeActionFlow(ctx context.Context,
 	result, err := handler.Execute(ctx, config, action, *binding, inputs)
 	if err != nil {
 		fmt.Printf("❌ Execution failed: %v\n", err)
+		return
+	}
+
+	if result.Error != nil {
+		fmt.Printf("❌ Execution failed: %v\n", result.Error)
 		return
 	}
 

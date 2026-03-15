@@ -4,17 +4,6 @@ import "github.com/google/uuid"
 
 type ActionType string
 
-const (
-	ActionTypeFunction    ActionType = "function"     // Native function call, "sharepoint_upload", "gmail_create_meeting", "mongodb_query", "child_agent_invoke"
-	ActionTypeMCP         ActionType = "mcp"          // MCP Server integration
-	ActionTypeHTTP        ActionType = "http"         // Generic HTTP API
-	ActionTypeDatabase    ActionType = "database"     // SQL/NoSQL queries
-	ActionTypeAgent       ActionType = "agent"        // Delegate to another agent
-	ActionTypeVectorQuery ActionType = "vector_query" // Direct vector search
-	ActionTypeScript      ActionType = "script"       // Python/JS/WASM execution
-	ActionTypeComposite   ActionType = "composite"    // Workflow of multiple actions
-)
-
 // ActionDefinition: Core model for individual actions
 type ActionDefinition struct {
 	BaseModel                    // Includes ID, CreatedAt, UpdatedAt, DeletedAt

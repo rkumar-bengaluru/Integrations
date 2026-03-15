@@ -31,6 +31,20 @@ func (r *integrationRepository) WithTransaction(fn func(repo repository.Integrat
 	})
 }
 
+func (r *integrationRepository) CheckIfActionDefinitionExist(ctx context.Context,
+	integrationRepo repository.IntegrationRepository,
+	actionType, actionName string, tenantID uuid.UUID) (*models.ActionDefinition, error) {
+
+	action, err := integrationRepo.GetActionDefinitionByName(ctx, models.ActionType(actionType), actionName, tenantID)
+
+	if err != nil {
+		r.logger.Debug("error in finding action definition", zap.String("", actionName))
+		return nil, err
+	}
+	r.logger.Debug("action definition found in database", zap.String("", action.Name))
+	return action, nil
+}
+
 // CreateIntegration creates a new integration with its actions
 func (r *integrationRepository) CreateIntegration(ctx context.Context, integration *models.Integration) error {
 	r.logger.Info("creating_integration",
@@ -395,6 +409,36 @@ func (r *integrationRepository) GetActionDefinitionByType(ctx context.Context, a
 	if tenantID != uuid.Nil {
 		query = query.Where("tenant_id = ? OR is_internal = ?", tenantID, true)
 	}
+
+	start := time.Now()
+	err := query.First(&action).Error
+	duration := time.Since(start)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			r.logger.Warn("action_not_found_by_type", zap.String("action_type", string(actionType)))
+			return nil, fmt.Errorf("action type not found: %s", actionType)
+		}
+		r.logger.Error("failed_to_fetch_action_by_type",
+			zap.Error(err),
+			zap.String("action_type", string(actionType)),
+			zap.Duration("duration_ms", duration),
+		)
+		return nil, fmt.Errorf("failed to fetch action by type: %w", err)
+	}
+
+	return &action, nil
+}
+
+func (r *integrationRepository) GetActionDefinitionByName(ctx context.Context, actionType models.ActionType, actionName string, tenantID uuid.UUID) (*models.ActionDefinition, error) {
+	r.logger.Debug("GetActionDefinitionByName",
+		zap.String("action_type", string(actionType)),
+		zap.String("name", actionName),
+		zap.String("tenant_id", tenantID.String()),
+	)
+
+	var action models.ActionDefinition
+	query := r.db.WithContext(ctx).Where("type = ? AND name = ? AND tenant_id = ?", actionType, actionName, tenantID)
 
 	start := time.Now()
 	err := query.First(&action).Error
