@@ -25,7 +25,7 @@ func CreateSnowIntegration(ctx context.Context,
 	integrationRepo := impl.NewIntegrationRepository(database, logger)
 
 	// check if integration already exist.
-	_, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SnowVendorName)
+	_, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SnowIntegrationName)
 	if err == repository.ErrIntegrationNotFound {
 		// get the platform credential id for this integration
 		credentials, err := credentialRepo.GetAllCredentials(ctx, SnowVendorName)

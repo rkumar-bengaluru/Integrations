@@ -214,7 +214,7 @@ func (h *SnowHandler) resolveRuntimeConfig(ctx context.Context, config *models.E
 				return nil, fmt.Errorf("unexpected expiresIn is nil")
 			}
 		}
-
+		return secrets, nil
 	}
 
 	return nil, fmt.Errorf("credential is not set for integration %s", binding.Integration.Name)

@@ -28,12 +28,13 @@ func CreateNewBinding(
 	slackHhandler IntegrationHandler,
 	logger *zap.Logger) error {
 	// select the correct platform credential by cred type
+	logger.Debug("find platform credential")
 	platformCredential, err := FindPlatformCredential(config.CredentialType, integration)
 
 	if err != nil {
 		return fmt.Errorf("error fetching platformCredential", zap.Error(err))
 	}
-
+	logger.Debug("found platform credential")
 	// Validate SecretMapping against ParamSchema
 	validation := commons.ValidateSecretMapping(config.CredentialBinding.SecretMapping, config.ParamInputSchema)
 	if !validation.Valid {

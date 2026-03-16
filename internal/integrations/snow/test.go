@@ -100,13 +100,21 @@ func (c *SnowHandler) TestAction(
 	c.logger.Debug("Output validation successful")
 
 	// Check for Slack error
-	if okVal, exists := testActionResponse["success"].(bool); exists && !okVal {
+	if okVal, exists := testActionResponse["success"].(bool); exists {
+		if !okVal {
+			return &handler.ActionResult{
+				Data:       testActionResponse,
+				StatusCode: http.StatusInternalServerError,
+			}, nil
+		}
+		// Success case
 		return &handler.ActionResult{
 			Data:       testActionResponse,
 			StatusCode: http.StatusOK,
 		}, nil
 	}
 
+	// If "success" not present, treat as error
 	return nil, fmt.Errorf("internal server error on test.action")
 
 }

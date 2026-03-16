@@ -11,7 +11,7 @@ import (
 	"agent.fabric.com/modules/internal/encryption"
 	"agent.fabric.com/modules/internal/handler"
 	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/integrations/snow"
+	"agent.fabric.com/modules/internal/integrations/snow" // swap with slack, jira, etc.
 	"agent.fabric.com/modules/internal/logger"
 	"agent.fabric.com/modules/internal/repository"
 	"agent.fabric.com/modules/internal/repository/db"
@@ -20,21 +20,22 @@ import (
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
-func main() {
-	ctx := context.Background()
-
-	// Load .env file into environment variables
+// Bootstrap sets up common services and repositories
+func Bootstrap(ctx context.Context) (
+	encryptionSvc encryption.EncryptionService,
+	bindingRepo repository.IntegrationBindingRepository,
+	credentialRepo repository.CredentialRepository,
+	bindingSvc service.IntegrationBindingService,
+	logInstance *zap.Logger,
+	tenantUID uuid.UUID,
+	database *gorm.DB,
+) {
+	// Load .env
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("Warning: Error loading .env file:", err)
-		panic(err)
-	}
-
-	// Initialize services
-	keyID := os.Getenv("ENCRYPTION_KEY_ID")
-	if keyID == "" {
-		keyID = "default-key-v1"
 	}
 
 	// Tenant ID
@@ -42,74 +43,84 @@ func main() {
 	if tenantID == "" {
 		tenantID = "default-key-v1"
 	}
+	tenantUID = uuid.MustParse(tenantID)
 
-	// Tenant and Integration IDs for test
-	tenantUID := uuid.MustParse(tenantID)
+	// Encryption
+	keyID := os.Getenv("ENCRYPTION_KEY_ID")
+	if keyID == "" {
+		keyID = "default-key-v1"
+	}
+	encryptionSvc = encryption.NewEncryptionService(keyID)
 
-	// logger
-	logger := logger.Get(ctx)
+	// Logger
+	logInstance = logger.Get(ctx)
 
-	encryptionSvc := encryption.NewEncryptionService(keyID)
-
+	// DB
 	conn, dialect := db.CreateDB(ctx, "genei-server")
 	defer conn.Close()
-	_, database := repository.NewSQLStore(dialect, logger)
+	_, database = repository.NewSQLStore(dialect, logInstance)
 
-	bindingRepo := impl.NewIntegrationBindingRepository(database, logger)
-	credentialRepo := impl.NewCredentialRepository(database, logger)
+	// Repos
+	bindingRepo = impl.NewIntegrationBindingRepository(database, logInstance)
+	credentialRepo = impl.NewCredentialRepository(database, logInstance)
 
-	// create slack integration if not exist.
+	// Binding service
+	validator := service.NewCredentialValidator()
+	bindingSvc = service.NewIntegrationBindingService(bindingRepo, credentialRepo, encryptionSvc, &validator)
+
+	return encryptionSvc, bindingRepo, credentialRepo, bindingSvc, logInstance, tenantUID, database
+}
+
+func main() {
+
+	SNOW_CLIENT_SECRET := os.Getenv("SNOW_CLIENT_SECRET")
+	fmt.Println(SNOW_CLIENT_SECRET)
+
+	ctx := context.Background()
+
+	// Bootstrap common services
+	encryptionSvc, bindingRepo, credentialRepo, bindingSvc, logger, tenantUID, database := Bootstrap(ctx)
+
+	// Integration-specific setup (swap snow with slack/jira/etc.)
 	integration, err := snow.CreateSnowIntegration(ctx, database, logger, encryptionSvc, credentialRepo, tenantUID)
-
 	if err != nil {
-		logger.Error("error fetching integration", zap.Error(err))
+		logger.Fatal("error creating integration", zap.Error(err))
 	}
+	handlerInstance := snow.NewSnowHandler(encryptionSvc, bindingSvc, logger)
 
-	// Initialize repositories
-	// slackHandler := slack.NewSlackHandler(encryptionSvc, bindingSvc, logger)
-
-	// Show options to user
+	// Display integration config
 	config := commons.DisplaySelectedIntegration(integration)
 
-	// Check if all the credential type bindings are already created.
-	// if yes go for actions execution.
+	// Find binding
 	binding, err := bindingRepo.FindIntegrationBinding(ctx, config.CredentialType, integration.ID)
-
-	// handler for slack
-	validator := service.NewCredentialValidator()
-	bindingSvc := service.NewIntegrationBindingService(bindingRepo, credentialRepo, encryptionSvc, &validator)
-	slackHandler := snow.NewSnowHandler(encryptionSvc, bindingSvc, logger)
-
 	if err != nil {
-		// try creating a new one.
-		handler.CreateNewBinding(ctx, tenantUID, config, integration, encryptionSvc,
-			credentialRepo, bindingRepo, bindingSvc, slackHandler, logger)
-		logger.Error("error fetching binding credential", zap.Error(err))
-		os.Exit(1)
+		logger.Error("error fetching binding credential creating new", zap.Error(err))
+		// Create new binding if not found
+		err = handler.CreateNewBinding(ctx, tenantUID, config, integration, encryptionSvc,
+			credentialRepo, bindingRepo, bindingSvc, handlerInstance, logger)
+		if err != nil {
+			logger.Fatal("error fetching binding credential", zap.Error(err))
+		}
+		logger.Debug("created new binding for cred type ", zap.String("", string(config.CredentialType)))
+		// tie it back to binding. (TEST LATER)
+		binding, _ = bindingRepo.FindIntegrationBinding(ctx, config.CredentialType, integration.ID)
 	}
-	fmt.Println(fmt.Sprintf("found the binding for action execution %s", binding.Credential.Name))
+	fmt.Printf("found binding for action execution %s\n", binding.Credential.Name)
 
 	// Test connection
 	fmt.Printf("\n🔌 Testing connection to %s...\n", integration.Name)
-
-	if err := slackHandler.TestConnection(ctx, config, *binding); err != nil {
+	if err := handlerInstance.TestConnection(ctx, config, *binding); err != nil {
 		fmt.Fprintf(os.Stderr, "❌ Connection test failed: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Println("✅ Connection successful!\n")
 
-	// List All actions to test.
-	// ============================================
-	// DYNAMIC ACTION MENU
-	// ============================================
-
+	// Dynamic Action Menu Loop
 	for {
-		// Build dynamic menu from ActionDefinitions
 		actionMenu := handler.BuildActionMenu(integration.Actions)
 
 		fmt.Printf("╔════════════════════════════════════════════════════════════════════╗\n")
-		fmt.Printf("║  %s Test Menu%-*s║\n", integration.Name,
-			35-len(integration.Name), "")
+		fmt.Printf("║  %s Test Menu%-*s║\n", integration.Name, 35-len(integration.Name), "")
 		fmt.Printf("╠════════════════════════════════════════════════════════════════════╣\n")
 
 		for _, item := range actionMenu {
@@ -117,6 +128,7 @@ func main() {
 		}
 		fmt.Printf("║  %2d. 🚪 Exit\n", len(actionMenu)+1)
 		fmt.Printf("╚════════════════════════════════════════════════════════════════════╝\n")
+
 		reader := bufio.NewReader(os.Stdin)
 		choice := handler.GetInput(reader, "\n👉 Select action: ")
 		selection, err := strconv.Atoi(strings.TrimSpace(choice))
@@ -130,10 +142,8 @@ func main() {
 			return
 		}
 
-		// Execute selected action
 		selectedAction := actionMenu[selection-1].Action
-
-		handler.ExecuteActionFlow(ctx, config, reader, slackHandler, binding, &selectedAction)
+		handler.ExecuteActionFlow(ctx, config, reader, handlerInstance, binding, &selectedAction)
 
 		fmt.Println("\n" + strings.Repeat("─", 70))
 	}

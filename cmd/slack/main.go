@@ -84,8 +84,7 @@ func main() {
 		// try creating a new one.
 		handler.CreateNewBinding(ctx, tenantUID, config, integration, encryptionSvc,
 			credentialRepo, bindingRepo, bindingSvc, slackHandler, logger)
-		logger.Error("error fetching binding credential", zap.Error(err))
-		os.Exit(1)
+		logger.Fatal("error fetching binding credential", zap.Error(err))
 	}
 	fmt.Println(fmt.Sprintf("found the binding for action execution %s", binding.Credential.Name))
 
