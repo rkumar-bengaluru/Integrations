@@ -99,7 +99,7 @@ func (r *integrationRepository) GetCredential(
 }
 
 func (r *integrationRepository) GetIntegrationByTenantIDAndName(ctx context.Context, tenantID uuid.UUID, name string) (*models.Integration, error) {
-	r.logger.Debug("fetching_integration_by_id", zap.String("integration_id", tenantID.String()))
+	r.logger.Debug("GetIntegrationByTenantIDAndName", zap.String("tenantID", tenantID.String()))
 
 	var integration models.Integration
 	start := time.Now()
@@ -110,7 +110,8 @@ func (r *integrationRepository) GetIntegrationByTenantIDAndName(ctx context.Cont
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			r.logger.Warn("integration_not_found", zap.String("integration_id", tenantID.String()))
+			r.logger.Warn("integration_not_found", zap.String("tenantID", tenantID.String()),
+				zap.String(name, name))
 			return nil, repository.ErrIntegrationNotFound
 		}
 		r.logger.Error("failed_to_fetch_integration",

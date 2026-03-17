@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"agent.fabric.com/modules/internal/encryption"
+	"agent.fabric.com/modules/internal/integrations/commons"
 	"agent.fabric.com/modules/internal/logger"
 	"agent.fabric.com/modules/internal/models"
 	"agent.fabric.com/modules/internal/repository"
@@ -17,50 +18,6 @@ var (
 	SlackBotCredentialName       = "Symphony Platform Bot Slack Credentials"
 	SlackOauthUserCredentialName = "Symphony Platform User Slack Credentials"
 )
-
-func FindPlatformCredential(
-	credType models.CredentialType,
-	integration *models.Integration,
-) (*models.PlatformCredential, error) {
-	if integration == nil {
-		return nil, fmt.Errorf("integration is nil")
-	}
-
-	for _, pc := range integration.PlatformCredentials {
-		fmt.Println(fmt.Sprintf("available credential type %s", pc.CredentialType))
-		fmt.Println(fmt.Sprintf("crdential name %s", pc.Credential.Name))
-		if pc.CredentialType == credType {
-			return pc, nil
-		}
-	}
-
-	return nil, fmt.Errorf("no platform credential found for type %s", credType)
-}
-
-// ConvertCredentialsToPlatform converts []*models.Credential into []*models.PlatformCredential
-func ConvertCredentialsToPlatform(
-	creds []*models.Credential,
-	integrationID *uuid.UUID,
-) ([]*models.PlatformCredential, error) {
-	platformCreds := make([]*models.PlatformCredential, 0, len(creds))
-
-	for _, c := range creds {
-		if c == nil {
-			continue // skip nil entries defensively
-		}
-
-		pc := &models.PlatformCredential{
-			IntegrationID:  uuid.Nil, // can be uuid.Nil if Integration not yet persisted
-			CredentialID:   c.ID,     // link to the credential record
-			CredentialType: c.Type,   // assuming Credential has a Type field
-			Credential:     c,        // preload the actual credential object
-		}
-
-		platformCreds = append(platformCreds, pc)
-	}
-
-	return platformCreds, nil
-}
 
 func AddCredentials(ctx context.Context,
 	encryptionSvc encryption.EncryptionService,
@@ -142,7 +99,10 @@ func AddUserSlackAuthCredential(ctx context.Context,
 
 	userDataHash := encryptionSvc.GenerateDataHash(userEncryptedData)
 
-	exist, err := check_if_credential_exists(ctx, repo, tenantID, SlackOauthUserCredentialName)
+	exist, err := commons.CheckIfCredentialExistByName(ctx, repo, tenantID, SlackOauthUserCredentialName)
+	if exist != nil {
+		return exist, nil
+	}
 
 	if exist != nil {
 		return exist, nil
@@ -231,7 +191,7 @@ func AddBotSlackAuthCredential(ctx context.Context,
 
 	botDataHash := encryptionSvc.GenerateDataHash(botEncryptedData)
 
-	exist, err := check_if_credential_exists(ctx, repo, tenantID, SlackBotCredentialName)
+	exist, err := commons.CheckIfCredentialExistByName(ctx, repo, tenantID, SlackBotCredentialName)
 	if exist != nil {
 		return exist, nil
 	}
