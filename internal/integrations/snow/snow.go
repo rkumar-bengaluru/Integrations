@@ -6,6 +6,7 @@ import (
 
 	"agent.fabric.com/modules/internal/encryption"
 	"agent.fabric.com/modules/internal/integrations/commons"
+	"agent.fabric.com/modules/internal/integrations/snow/actions"
 	"agent.fabric.com/modules/internal/models"
 	"agent.fabric.com/modules/internal/repository"
 	"agent.fabric.com/modules/internal/repository/impl"
@@ -174,9 +175,66 @@ func CreateSnowIntegration(ctx context.Context,
 			return nil, fmt.Errorf("Error creating integration %s, with error %w", SnowIntegrationName, err)
 		}
 
+		// create additional integration actions if there are new one added.
+		err = AddActions(ctx, tenantID, integrationRepo, integration, logger)
+		if err != nil {
+			return nil, err
+		}
+
+		integration, err = integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SnowIntegrationName)
+		if err != nil {
+			return nil, err
+		}
+
 		return integration, nil
+	}
+
+	integration, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SnowIntegrationName)
+	if err != nil {
+		return nil, err
+	}
+	// create additional integration actions if there are new one added.
+	err = AddActions(ctx, tenantID, integrationRepo, integration, logger)
+	if err != nil {
+		return nil, err
 	}
 	// integration already exist.
 	logger.Debug(fmt.Sprintf("integration  %s already exit", SnowIntegrationName))
-	return integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SnowIntegrationName)
+	return integration, nil
+}
+
+func AddActions(ctx context.Context,
+	tenantID uuid.UUID,
+	integrationRepo repository.IntegrationRepository,
+	integration *models.Integration,
+	logger *zap.Logger) error {
+	action, err := actions.CreateIncidentAction(ctx, tenantID,
+		SnowCreateIncidentActionName, SnowCreateIncidentActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.GetIncidentByNumberAction(ctx, tenantID,
+		SnowGetIncidentActionName, SnowGetIncidentActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.SearchSimilarIncidentAction(ctx, tenantID,
+		SnowSearchIncidentActionName, SnowSearchIncidentActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.UpdateIncidentAction(ctx, tenantID,
+		SnowUpdateIncidentActionName, SnowUpdateIncidentActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	return nil
 }

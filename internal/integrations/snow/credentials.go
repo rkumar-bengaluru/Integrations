@@ -14,6 +14,10 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	SNOW_CLIENT_CREDENTIALS = "client_credentials"
+)
+
 func AddSnowCredentials(ctx context.Context,
 	encryptionSvc encryption.EncryptionService,
 	repo repository.CredentialRepository,
@@ -54,7 +58,7 @@ func AddOauth2ClientCredential(ctx context.Context,
 	bot_secrets := map[string]interface{}{
 		"client_id":     SNOW_CLIENT_ID,
 		"client_secret": SNOW_CLIENT_SECRET,
-		"grant_type":    "client_credentials",
+		"grant_type":    SNOW_CLIENT_CREDENTIALS,
 	}
 
 	// Encrypt secrets

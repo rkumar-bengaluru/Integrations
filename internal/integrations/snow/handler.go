@@ -69,6 +69,14 @@ func (h *SnowHandler) Execute(
 	switch string(actionDef.Type) {
 	case SnowTestActionType:
 		return h.TestAction(ctx, runtimeConfig, actionDef, binding, inputs)
+	case SnowCreateIncidentActionType:
+		return h.CreateIncident(ctx, runtimeConfig, actionDef, binding, config, inputs)
+	case SnowGetIncidentActionType:
+		return h.GetIncidentByNumber(ctx, runtimeConfig, actionDef, binding, config, inputs)
+	case SnowSearchIncidentActionType:
+		return h.SearchIncidents(ctx, runtimeConfig, actionDef, binding, config, inputs)
+	case SnowUpdateIncidentActionType:
+		return h.UpdateIncident(ctx, runtimeConfig, actionDef, binding, config, inputs)
 	default:
 		return nil, fmt.Errorf("unsupported action: %s", actionDef.Type)
 	}
@@ -83,7 +91,7 @@ func (h *SnowHandler) TestConnection(
 
 	secrets, err := h.resolveRuntimeConfig(ctx, config, binding)
 	if err != nil {
-		return fmt.Errorf("failed to decrypt credential: %w", err)
+		return fmt.Errorf("Error %w", err)
 	}
 
 	switch config.CredentialBinding.CredentialType {

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"agent.fabric.com/modules/internal/models"
@@ -119,6 +120,11 @@ func (h *SnowHandler) postSnowToken(endpoint string, form url.Values) (*SnowToke
 		return nil, err
 	}
 
+	// Debug: print raw response
+	if strings.HasPrefix(strings.TrimSpace(string(body)), "<html") {
+		return nil, fmt.Errorf("instance is hibernating or returned HTML instead of JSON")
+	}
+
 	var tr SnowTokenResponse
 	if err := json.Unmarshal(body, &tr); err != nil {
 		return nil, fmt.Errorf("invalid JSON: %w", err)
@@ -150,7 +156,9 @@ func (h *SnowHandler) ExpiryTimeRFC3339(seconds int) string {
 	return expiry.Format(time.RFC3339)
 }
 
-func (h *SnowHandler) resolveRuntimeConfig(ctx context.Context, config *models.ExecutionConfig, binding models.IntegrationBinding) (*SnowRuntimeConfig, error) {
+func (h *SnowHandler) resolveRuntimeConfig(ctx context.Context,
+	config *models.ExecutionConfig,
+	binding models.IntegrationBinding) (*SnowRuntimeConfig, error) {
 	if binding.Credential != nil && len(binding.Credential.EncryptedData) > 0 {
 		secrets, err := h.decryptCredentialSecrets(binding.Credential)
 		if err != nil {
@@ -175,7 +183,7 @@ func (h *SnowHandler) resolveRuntimeConfig(ctx context.Context, config *models.E
 
 				if expired {
 					resp, err := h.exchangeToken(secrets.ClientIDKey, secrets.ClientSecretKey,
-						string(models.GrantTypeAuthClientCredential),
+						SNOW_CLIENT_CREDENTIALS,
 						*config.CredentialBinding.AuthorityUrl)
 					if err != nil {
 						return nil, err
