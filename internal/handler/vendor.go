@@ -15,7 +15,7 @@ import (
 )
 
 type ActionResult struct {
-	Data       map[string]interface{}
+	Data       interface{}
 	StatusCode int
 	Error      error
 	Metadata   map[string]interface{}

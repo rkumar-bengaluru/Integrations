@@ -34,6 +34,7 @@ const (
 	GrantTypeAuthorizationFlow    GrantType = "authorization_flow"
 	GrantTypeAuthClientCredential GrantType = "client_credenial"
 	GrantTypeAuthAPIKey           GrantType = "api_key"
+	GrantGitubServiceAcc          GrantType = "github_service_account"
 )
 
 type Status string
