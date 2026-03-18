@@ -30,6 +30,7 @@ go.work.sum
 go.sum
 *.log
 
+secrets/
 # Editor/IDE
 # .idea/
 # .vscode/

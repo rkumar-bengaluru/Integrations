@@ -2,7 +2,7 @@ package snow
 
 var (
 	SnowOauth2ClientCredentialFlowName            = "Symphony Platform Bot Snow App Credentials"
-	SnowOauth2AuthorizationCodeFlowCredentialName = "Symphony Platform User Slack Credentials"
+	SnowOauth2AuthorizationCodeFlowCredentialName = "Symphony Platform User Snow Credentials"
 
 	SnowVendorName      = "snow"
 	SnowIntegrationName = "ServiceNow Integration"

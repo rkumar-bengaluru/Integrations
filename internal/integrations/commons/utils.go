@@ -86,6 +86,87 @@ func PrintCollectedParams(params map[string]interface{}) {
 	}
 }
 
+func ValidateSchemaSupportsArray(schema models.JSONMap, data interface{}, schemaType string) error {
+	if schema == nil {
+		return nil // no schema defined
+	}
+
+	// Check top-level type
+	expectedType, _ := schema["type"].(string)
+	switch expectedType {
+	case "object":
+		// Expect map[string]interface{}
+		obj, ok := data.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("%s must be an object", schemaType)
+		}
+
+		// Get properties
+		props, _ := schema["properties"].(map[string]interface{})
+
+		// Get required fields
+		requiredFields := []string{}
+		if req, ok := schema["required"].([]interface{}); ok {
+			for _, r := range req {
+				if s, ok := r.(string); ok {
+					requiredFields = append(requiredFields, s)
+				}
+			}
+		}
+
+		// Check required fields exist
+		for _, key := range requiredFields {
+			if _, exists := obj[key]; !exists {
+				return fmt.Errorf("missing required %s field: %s", schemaType, key)
+			}
+		}
+
+		// Validate types of properties
+		for key, def := range props {
+			defMap, ok := def.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			if value, exists := obj[key]; exists && value != nil {
+				expectedType, _ := defMap["type"].(string)
+				if err := validateType(key, value, expectedType); err != nil {
+					return fmt.Errorf("invalid type for %s field '%s': %w", schemaType, key, err)
+				}
+			}
+		}
+
+	case "array":
+		// Expect []interface{}
+		arr, ok := data.([]map[string]interface{})
+		if !ok {
+			// try generic []interface{}
+			rawArr, ok := data.([]interface{})
+			if !ok {
+				return fmt.Errorf("%s must be an array", schemaType)
+			}
+			// convert to []map[string]interface{} if possible
+			arr = []map[string]interface{}{}
+			for _, elem := range rawArr {
+				if m, ok := elem.(map[string]interface{}); ok {
+					arr = append(arr, m)
+				} else {
+					return fmt.Errorf("%s array element must be object", schemaType)
+				}
+			}
+		}
+
+		// Validate each element against items schema
+		itemsSchema, _ := schema["items"].(map[string]interface{})
+		for i, elem := range arr {
+			if err := ValidateSchema(itemsSchema, elem, fmt.Sprintf("%s[%d]", schemaType, i)); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 // validateSchema validates that required fields in the schema are present in the data
 // Works for both InputSchema and OutputSchema
 func ValidateSchema(schema models.JSONMap, data map[string]interface{}, schemaType string) error {
