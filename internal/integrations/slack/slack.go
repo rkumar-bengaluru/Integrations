@@ -6,6 +6,7 @@ import (
 
 	"agent.fabric.com/modules/internal/encryption"
 	"agent.fabric.com/modules/internal/integrations/commons"
+	"agent.fabric.com/modules/internal/integrations/slack/actions"
 	"agent.fabric.com/modules/internal/models"
 	"agent.fabric.com/modules/internal/repository"
 	"agent.fabric.com/modules/internal/repository/impl"
@@ -485,9 +486,67 @@ func CreateSlackIntegration(ctx context.Context,
 			return nil, fmt.Errorf("Error creating integration %s, with error %w", SlackIntegrationName, err)
 		}
 
+		// create additional integration actions if there are new one added.
+		err = AddActions(ctx, tenantID, integrationRepo, integration, logger)
+		if err != nil {
+			return nil, err
+		}
+
+		integration, err = integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SlackIntegrationName)
+		if err != nil {
+			return nil, err
+		}
+
 		return integration, nil
+	}
+
+	integration, err := integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SlackIntegrationName)
+	if err != nil {
+		return nil, err
+	}
+	// create additional integration actions if there are new one added.
+	err = AddActions(ctx, tenantID, integrationRepo, integration, logger)
+	if err != nil {
+		return nil, err
 	}
 	// integration already exist.
 	logger.Debug(fmt.Sprintf("integration  %s already exit", SlackIntegrationName))
-	return integrationRepo.GetIntegrationByTenantIDAndName(ctx, tenantID, SlackIntegrationName)
+	return integration, nil
+
+}
+
+func AddActions(ctx context.Context,
+	tenantID uuid.UUID,
+	integrationRepo repository.IntegrationRepository,
+	integration *models.Integration,
+	logger *zap.Logger) error {
+	action, err := actions.AddListUsersAction(ctx, tenantID,
+		SlackListUsersActionName, SlackListUsersActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.AddInviteToChannelAction(ctx, tenantID,
+		SlackInviteUsersActionName, SlackInviteUsersActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.AddListChannelsAction(ctx, tenantID,
+		SlackListChannelsActionName, SlackListChannelsActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	action, err = actions.AddPostMessageToChannelAction(ctx, tenantID,
+		SlackPostMessageActionName, SlackPostMessageActionType, integrationRepo, integration)
+	if err != nil {
+		fmt.Errorf("error creating action %w", err)
+	}
+	logger.Debug("created action successfully", zap.String(action.Name, action.Name))
+
+	return nil
 }
