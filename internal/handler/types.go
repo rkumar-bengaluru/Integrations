@@ -1,6 +1,6 @@
 package handler
 
-import "agent.fabric.com/modules/internal/models"
+import "github.com/rkumar-bengaluru/Integrations/internal/models"
 
 // ActionMenuItem represents a menu item for an action
 type ActionMenuItem struct {

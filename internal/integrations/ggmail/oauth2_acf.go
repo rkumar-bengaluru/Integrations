@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/utils"
 	"github.com/google/uuid"
 	"github.com/pkg/browser"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/utils"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

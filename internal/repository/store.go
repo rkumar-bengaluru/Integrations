@@ -7,11 +7,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-
-	"agent.fabric.com/modules/internal/models"
 )
 
 type ZapGormLogger struct {

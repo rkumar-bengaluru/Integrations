@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"agent.fabric.com/modules/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 )
 
 // exchangeLongLivedToken calls oauth.v2.exchange to convert legacy long-lived token

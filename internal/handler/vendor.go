@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/repository"
 	"github.com/google/uuid"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository"
 	"go.uber.org/zap"
 )
 

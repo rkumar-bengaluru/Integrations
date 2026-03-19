@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"agent.fabric.com/modules/internal/models"
 	"github.com/pkg/browser"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 	"go.uber.org/zap"
 )
 
