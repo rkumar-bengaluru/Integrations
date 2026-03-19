@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"agent.fabric.com/modules/internal/handler"
-	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 	"go.uber.org/zap"
 	"google.golang.org/api/gmail/v1"
 )

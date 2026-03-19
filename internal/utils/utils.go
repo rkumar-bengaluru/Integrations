@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	"agent.fabric.com/modules/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/internal/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/gomail.v2"

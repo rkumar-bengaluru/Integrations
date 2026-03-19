@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"agent.fabric.com/modules/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 )
 
 // RuntimeConfig holds resolved values from binding

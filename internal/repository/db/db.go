@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"agent.fabric.com/modules/internal/logger"
-	"agent.fabric.com/modules/internal/utils"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/rkumar-bengaluru/Integrations/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/internal/utils"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

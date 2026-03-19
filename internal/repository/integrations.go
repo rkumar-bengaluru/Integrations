@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"agent.fabric.com/modules/internal/api"
-	"agent.fabric.com/modules/internal/models"
 	"github.com/google/uuid"
+	"github.com/rkumar-bengaluru/Integrations/internal/api"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 )
 
 var (

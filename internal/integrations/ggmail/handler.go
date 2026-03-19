@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/handler"
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/service"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/service"
 	"go.uber.org/zap"
 )
 

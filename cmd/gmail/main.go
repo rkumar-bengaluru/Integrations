@@ -8,17 +8,17 @@ import (
 	"strconv"
 	"strings"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/handler"
-	"agent.fabric.com/modules/internal/integrations/commons" // swap with slack, jira, etc.
-	"agent.fabric.com/modules/internal/integrations/ggmail"
-	"agent.fabric.com/modules/internal/logger"
-	"agent.fabric.com/modules/internal/repository"
-	"agent.fabric.com/modules/internal/repository/db"
-	"agent.fabric.com/modules/internal/repository/impl"
-	"agent.fabric.com/modules/internal/service"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons" // swap with slack, jira, etc.
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/ggmail"
+	"github.com/rkumar-bengaluru/Integrations/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository/db"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository/impl"
+	"github.com/rkumar-bengaluru/Integrations/internal/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

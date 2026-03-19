@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/handler"
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/service"
-	"agent.fabric.com/modules/internal/utils"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/service"
+	"github.com/rkumar-bengaluru/Integrations/internal/utils"
 	"go.uber.org/zap"
 )
 

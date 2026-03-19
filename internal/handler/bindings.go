@@ -7,12 +7,12 @@ import (
 	"os"
 	"strings"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/repository"
-	"agent.fabric.com/modules/internal/service"
 	"github.com/google/uuid"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository"
+	"github.com/rkumar-bengaluru/Integrations/internal/service"
 	"go.uber.org/zap"
 )
 

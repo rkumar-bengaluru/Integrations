@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"agent.fabric.com/modules/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 	"go.uber.org/zap"
 )
 

@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"agent.fabric.com/modules/internal/encryption"
-	"agent.fabric.com/modules/internal/integrations/commons"
-	"agent.fabric.com/modules/internal/logger"
-	"agent.fabric.com/modules/internal/models"
-	"agent.fabric.com/modules/internal/repository"
 	"github.com/google/uuid"
+	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/repository"
 )
 
 var (

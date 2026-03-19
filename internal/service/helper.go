@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"agent.fabric.com/modules/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/internal/models"
 )
 
 // ToCredentialTypeEntity converts a DTO string into a model CredentialType
