@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/rkumar-bengaluru/Integrations/internal/api"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/api"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 )
 
 var (

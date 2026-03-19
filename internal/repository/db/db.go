@@ -7,8 +7,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/rkumar-bengaluru/Integrations/internal/logger"
-	"github.com/rkumar-bengaluru/Integrations/internal/utils"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/utils"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

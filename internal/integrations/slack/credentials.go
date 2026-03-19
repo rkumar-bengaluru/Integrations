@@ -7,11 +7,11 @@ import (
 	"os"
 
 	"github.com/google/uuid"
-	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
-	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
-	"github.com/rkumar-bengaluru/Integrations/internal/logger"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
-	"github.com/rkumar-bengaluru/Integrations/internal/repository"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/repository"
 )
 
 var (

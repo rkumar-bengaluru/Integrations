@@ -10,15 +10,15 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
-	"github.com/rkumar-bengaluru/Integrations/internal/encryption"
-	"github.com/rkumar-bengaluru/Integrations/internal/handler"
-	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
-	"github.com/rkumar-bengaluru/Integrations/internal/integrations/snow" // swap with slack, jira, etc.
-	"github.com/rkumar-bengaluru/Integrations/internal/logger"
-	"github.com/rkumar-bengaluru/Integrations/internal/repository"
-	"github.com/rkumar-bengaluru/Integrations/internal/repository/db"
-	"github.com/rkumar-bengaluru/Integrations/internal/repository/impl"
-	"github.com/rkumar-bengaluru/Integrations/internal/service"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/encryption"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/integrations/snow" // swap with slack, jira, etc.
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/repository"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/repository/db"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/repository/impl"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/service"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

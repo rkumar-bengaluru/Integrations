@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 	"go.uber.org/zap"
 )
 

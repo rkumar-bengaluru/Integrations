@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/logger"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/gomail.v2"

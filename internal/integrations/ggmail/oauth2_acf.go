@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pkg/browser"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
-	"github.com/rkumar-bengaluru/Integrations/internal/utils"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/utils"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

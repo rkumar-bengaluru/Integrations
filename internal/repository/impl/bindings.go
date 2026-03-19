@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/rkumar-bengaluru/Integrations/internal/api"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
-	"github.com/rkumar-bengaluru/Integrations/internal/repository"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/api"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/repository"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

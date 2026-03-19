@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/handler"
-	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 	"go.uber.org/zap"
 )
 

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 )
 
 // exchangeLongLivedToken calls oauth.v2.exchange to convert legacy long-lived token

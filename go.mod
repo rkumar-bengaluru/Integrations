@@ -1,4 +1,4 @@
-module github.com/rkumar-bengaluru/Integrations
+module github.com/rkumar-bengaluru/Integrations/v2
 
 go 1.25.0
 

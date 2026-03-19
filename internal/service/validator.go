@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 )
 
 // Validator interface for input validation

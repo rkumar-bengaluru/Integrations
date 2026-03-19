@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
 )
 
 // ToCredentialTypeEntity converts a DTO string into a model CredentialType

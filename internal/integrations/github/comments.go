@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/v84/github"
-	"github.com/rkumar-bengaluru/Integrations/internal/handler"
-	"github.com/rkumar-bengaluru/Integrations/internal/integrations/commons"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
-	"github.com/rkumar-bengaluru/Integrations/internal/utils"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/handler"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/integrations/commons"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/utils"
 	"go.uber.org/zap"
 )
 

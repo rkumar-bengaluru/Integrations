@@ -10,8 +10,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-github/v84/github"
-	"github.com/rkumar-bengaluru/Integrations/internal/models"
-	"github.com/rkumar-bengaluru/Integrations/internal/utils"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/models"
+	"github.com/rkumar-bengaluru/Integrations/v2/internal/utils"
 	"go.uber.org/zap"
 )
 
